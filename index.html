@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caso de Éxito | Zebrands Image Converter</title>
+    
+    <!-- Tailwind CSS for fast and modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter, for a clean and professional look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- GSAP: Animation library to bring the page to life -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
+
+    <style>
+        /* Base styles inspired by the new reference (Pitch Deck) */
+        html {
+            scroll-behavior: smooth;
+        }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #020617; /* bg-slate-950: Darker background for higher contrast */
+            color: #e2e8f0; /* text-slate-200: Main text color for high readability */
+            overflow-x: hidden;
+        }
+        /* Highlight effect for titles, taken from the reference */
+        .highlight-text {
+            background: -webkit-linear-gradient(45deg, #22d3ee, #0ea5e9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        /* FIX: Added line-height to prevent letters like 'g' from being cut off */
+        h1.tracking-tighter {
+            line-height: 1.2;
+        }
+        .card {
+            background-color: rgb(15 23 42 / 0.5); /* bg-slate-900/50: Darker cards */
+            border: 1px solid #1e293b; /* border-slate-800 */
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .prompt-btn {
+            background-color: #1e293b; /* bg-slate-800 */
+            border: 1px solid #334155; /* border-slate-700 */
+            transition: all 0.3s ease;
+        }
+        .prompt-btn:hover {
+            background-color: #0ea5e9; /* Highlight color on hover */
+            border-color: #0ea5e9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(14, 165, 233, 0.3);
+        }
+        .prompt-btn.active {
+            background-color: #16a34a;
+            border-color: #16a34a;
+            color: white;
+        }
+        .ai-response {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.7s ease-out, opacity 0.5s ease-out, margin-top 0.5s ease-out;
+            opacity: 0;
+        }
+        .ai-response.show {
+            max-height: 500px; /* Adjust based on content */
+            opacity: 1;
+            margin-top: 1rem;
+        }
+        .stat-number {
+            font-weight: 900;
+            font-size: 3rem; /* Adjusted for 3 stats */
+            color: #34d399; /* text-emerald-400 */
+            line-height: 1;
+        }
+        /* Subtle background with radial gradients, as in the reference */
+        .subtle-gradient-bg {
+            background-image: radial-gradient(circle at 15% 25%, rgba(14, 165, 233, 0.1), transparent 40%),
+                              radial-gradient(circle at 85% 75%, rgba(22, 163, 74, 0.08), transparent 40%);
+        }
+        #gif-placeholder {
+            background-color: #1e293b;
+            border: 2px dashed #334155;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-style: italic;
+        }
+        /* Style for inline code */
+        code {
+            background-color: #1e293b;
+            color: #93c5fd;
+            padding: 0.1em 0.4em;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+        }
+        /* Animation for the scroll arrow */
+        .scroll-down-arrow {
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        .back-to-top {
+            transition: opacity 0.3s, transform 0.3s;
+        }
+    </style>
+</head>
+<body class="antialiased subtle-gradient-bg">
+
+    <div id="top" class="container mx-auto p-4 md:p-8 max-w-5xl">
+
+        <!-- === HERO SECTION === -->
+        <header class="text-center py-16 md:py-24">
+            <div id="hero-box">
+                <h1 class="text-4xl md:text-6xl font-black text-white tracking-tighter">
+                    Caso de Éxito:
+                    <span class="highlight-text block mt-2">Zebrands Image Converter</span>
+                </h1>
+                <p class="mt-4 text-lg text-slate-300 max-w-2xl mx-auto">
+                    Cómo una idea se convirtió en una herramienta interna de alto impacto en menos de 2 horas de trabajo.
+                </p>
+                
+                <!-- Interactive Gimmick -->
+                <div class="mt-12">
+                    <button id="gimmick-btn" class="bg-sky-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-sky-500 transition-all transform hover:scale-105 shadow-lg">
+                        ▶ Iniciar Simulación
+                    </button>
+                    <!-- GIF Container -->
+                    <div id="gif-container" class="mt-6 max-w-2xl mx-auto" style="display: none;">
+                        <img id="gif-placeholder" src="https://placehold.co/600x400/1e293b/64748b?text=Tu+.gif+aquí" alt="Espacio para GIF de la simulación" class="w-full rounded-lg">
+                    </div>
+                    <div id="gimmick-text-container" class="mt-4 text-left max-w-2xl mx-auto p-4 rounded-lg bg-slate-900/80 border border-slate-700" style="display: none;">
+                        <p class="font-mono text-green-400 text-sm"><span id="gimmick-text"></span><span class="animate-ping">_</span></p>
+                    </div>
+                </div>
+                 <!-- Arrow to invite scrolling -->
+                <div id="scroll-down" class="mt-16 text-slate-500 scroll-down-arrow">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto w-8 h-8"><path d="M12 5v14"></path><path d="m19 12-7 7-7-7"></path></svg>
+                </div>
+            </div>
+        </header>
+
+        <main class="space-y-24 md:space-y-32">
+
+            <!-- === NEW SECTION: THE JOURNEY === -->
+            <section class="story-section">
+                <h2 class="text-3xl md:text-4xl font-bold text-white text-center">Nuestro Journey: De la Idea a la Realidad</h2>
+                <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div class="card p-6 rounded-xl text-left">
+                        <h3 class="font-bold text-lg text-white flex items-center"><span class="text-2xl mr-3">1️⃣</span> Fase 1: Prototipado con Gemini</h3>
+                        <p class="text-slate-400 mt-2 text-sm">Todo comenzó con una conversación. Le describí a Gemini la necesidad de una herramienta de conversión de imágenes. En minutos, generó un prototipo funcional en un solo archivo HTML. Esto nos permitió validar la idea central de forma inmediata.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl text-left">
+                        <h3 class="font-bold text-lg text-white flex items-center"><span class="text-2xl mr-3">2️⃣</span> Fase 2: Industrialización con V0</h3>
+                        <p class="text-slate-400 mt-2 text-sm">Con el prototipo validado, pasamos a Vercel V0 para convertirlo en una aplicación profesional. Aquí es donde la visión de producto guió a la IA para añadir seguridad, mejorar la UX, corregir bugs y refinar cada detalle hasta llegar a la versión final.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- === SECTION: THE PROBLEM === -->
+            <section class="text-center story-section">
+                <h2 class="text-3xl md:text-4xl font-bold text-white">El Problema de Origen 🤔</h2>
+                <p class="mt-4 text-slate-300 max-w-3xl mx-auto">
+                    Necesitábamos convertir imágenes a formato <code>WebP</code> para optimizar nuestras webs. Las opciones eran un dolor de cabeza.
+                </p>
+                <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="card p-6 rounded-xl text-left">
+                        <h3 class="font-bold text-lg text-white">🐌 Herramientas Gratuitas</h3>
+                        <p class="text-slate-400 mt-2 text-sm">Ineficientes. No permitían procesar en lote. Imposible para el día a día.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl text-left">
+                        <h3 class="font-bold text-lg text-white">💲 Plataformas de Pago</h3>
+                        <p class="text-slate-400 mt-2 text-sm">Potentes, pero con un costo mensual recurrente que no se justificaba.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl text-left">
+                        <h3 class="font-bold text-lg text-white">👨‍💻 Desarrollo Interno</h3>
+                        <p class="text-slate-400 mt-2 text-sm">Lento. Nuestro equipo de Tech estaba (y está) enfocado en el producto principal.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- === SECTION: THE SOLUTION (THE DIALOGUE) === -->
+            <section class="story-section">
+                <h2 class="text-3xl md:text-4xl font-bold text-white text-center">La Solución: El Diálogo Iterativo 🚀</h2>
+                <p class="mt-4 text-slate-300 max-w-3xl mx-auto text-center">
+                    Actué como Director de Proyecto y usé la IA como mi equipo de desarrollo personal. Fue un diálogo constante, una iteración ágil.
+                </p>
+
+                <div class="mt-12">
+                    <!-- AI Conversation Simulation -->
+                    <div class="card p-6 md:p-8 rounded-2xl">
+                        <h3 class="text-2xl font-bold text-white">Simulación de la Conversación con IA</h3>
+                        <p class="text-slate-400 mt-1">Estos son ejemplos muy simplificados de las iteraciones. El proceso real fue mucho más detallado. Haz clic para ver cómo la IA respondía.</p>
+                        
+                        <div class="mt-6 space-y-4">
+                             <!-- More Prompts -->
+                            <div>
+                                <button class="prompt-btn w-full text-left p-4 rounded-lg" data-target="response-1">
+                                    <span class="font-bold">👤 Prompt #1 (Base):</span> "Toma este prototipo HTML y conviértelo en una app moderna y robusta con React y TypeScript."
+                                </button>
+                                <div id="response-1" class="ai-response card p-4 rounded-lg border-l-4 border-green-500">
+                                    <p class="font-bold text-green-400">🤖 AI Response:</p>
+                                    <p class="text-slate-300 mt-2 text-sm">¡Hecho! Código modernizado a Next.js y React. Estructura de componentes creada. Base sólida lista.</p>
+                                </div>
+                            </div>
+                            <div>
+                                <button class="prompt-btn w-full text-left p-4 rounded-lg" data-target="response-2">
+                                    <span class="font-bold">👤 Prompt #2 (Security):</span> "Necesitamos que sea segura. Acceso solo con contraseña y que la sesión expire tras 30 mins de inactividad."
+                                </button>
+                                <div id="response-2" class="ai-response card p-4 rounded-lg border-l-4 border-green-500">
+                                    <p class="font-bold text-green-400">🤖 AI Response:</p>
+                                    <p class="text-slate-300 mt-2 text-sm">¡Listo! Sistema de autenticación implementado con límite de intentos y expiración de sesión por inactividad.</p>
+                                </div>
+                            </div>
+                            <div>
+                                <button class="prompt-btn w-full text-left p-4 rounded-lg" data-target="response-5">
+                                    <span class="font-bold">👤 Prompt #3 (Core Functionality):</span> "La carga de archivos <code>.zip</code> debe ser instantánea y soportar hasta 100MB por conversión."
+                                </button>
+                                <div id="response-5" class="ai-response card p-4 rounded-lg border-l-4 border-green-500">
+                                    <p class="font-bold text-green-400">🤖 AI Response:</p>
+                                    <p class="text-slate-300 mt-2 text-sm">Lógica de carga de ZIPs optimizada para procesamiento instantáneo y límite de 100MB por lote implementado.</p>
+                                </div>
+                            </div>
+                            <div>
+                                <button class="prompt-btn w-full text-left p-4 rounded-lg" data-target="response-3">
+                                    <span class="font-bold">👤 Prompt #4 (UX/UI):</span> "Mejora la accesibilidad de los colores. El botón de 'Convertir' se rompe visualmente al procesar."
+                                </button>
+                                <div id="response-3" class="ai-response card p-4 rounded-lg border-l-4 border-green-500">
+                                    <p class="font-bold text-green-400">🤖 AI Response:</p>
+                                    <p class="text-slate-300 mt-2 text-sm">Ajustes de UI/UX completados. Se mejoró el contraste y espaciado. El botón ahora tiene una barra de progreso dedicada que no causa desbordamiento.</p>
+                                </div>
+                            </div>
+                            <div>
+                                <button class="prompt-btn w-full text-left p-4 rounded-lg" data-target="response-4">
+                                    <span class="font-bold">👤 Prompt #5 (Bug Fix):</span> "Hay un bug. Después de convertir un ZIP, no puedo volver a subirlo. Parece un problema de estado."
+                                </button>
+                                <div id="response-4" class="ai-response card p-4 rounded-lg border-l-4 border-green-500">
+                                    <p class="font-bold text-green-400">🤖 AI Response:</p>
+                                    <p class="text-slate-300 mt-2 text-sm">Error de estado corregido. Se implementó una limpieza completa del estado después de cada conversión, permitiendo subir los mismos archivos nuevamente.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- === SECTION: THE FINAL RESULT === -->
+            <section class="story-section">
+                <h2 class="text-3xl md:text-4xl font-bold text-white text-center">El Resultado Final ✨</h2>
+                 <p class="mt-4 text-slate-300 max-w-3xl mx-auto text-center">
+                    Una herramienta interna robusta, hecha a medida, que resuelve un problema real.
+                </p>
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                    <div class="card p-6 md:p-8 rounded-2xl flex flex-col h-full">
+                        <h3 class="text-2xl font-bold text-white">Features Clave:</h3>
+                        <ul class="mt-6 space-y-4 text-slate-300 flex-grow">
+                            <li class="flex items-start"><span class="text-green-400 mr-3 mt-1">✅</span> <span><strong>Conversión Masiva a WebP:</strong> Sube decenas de imágenes a la vez, ¡incluso en un archivo <code>.zip</code>!</span></li>
+                            <li class="flex items-start"><span class="text-green-400 mr-3 mt-1">✅</span> <span><strong>Seguridad y Exclusividad:</strong> Acceso protegido por contraseña solo para nuestro equipo.</span></li>
+                            <li class="flex items-start"><span class="text-green-400 mr-3 mt-1">✅</span> <span><strong>Dashboard de Impacto:</strong> Muestra en tiempo real los MB de datos que estás ahorrando.</span></li>
+                            <li class="flex items-start"><span class="text-green-400 mr-3 mt-1">✅</span> <span><strong>Interfaz Intuitiva:</strong> Diseñada pensando en la facilidad de uso, no en la complejidad técnica.</span></li>
+                        </ul>
+                    </div>
+                    <div class="space-y-8 h-full">
+                         <!-- NEW Dashboard Card for Metrics -->
+                        <div class="card p-6 md:p-8 rounded-2xl h-full flex flex-col justify-center">
+                            <h3 class="text-2xl font-bold text-white text-center mb-6">Impacto Cuantificable</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                                <div>
+                                    <p class="text-slate-400 text-sm">Ahorro Mensual</p>
+                                    <p class="stat-number" id="stat-savings">0</p>
+                                    <p class="text-slate-400 -mt-2">MB+</p>
+                                </div>
+                                <div>
+                                    <p class="text-slate-400 text-sm">Ahorro de Tiempo</p>
+                                    <p class="stat-number" id="stat-speed">0</p>
+                                    <p class="text-slate-400 -mt-2">x más rápido</p>
+                                </div>
+                                <div>
+                                    <p class="text-slate-400 text-sm">Costo</p>
+                                    <p class="stat-number" id="stat-cost">$0</p>
+                                    <p class="text-slate-400 -mt-2">pesos</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- NEW Card for the Link -->
+                <div class="mt-8 card p-6 rounded-xl text-center">
+                    <h3 class="font-bold text-lg text-white">¡Pruébala tú mismo!</h3>
+                    <p class="text-slate-400 mt-2 text-sm">La herramienta está disponible para todo el equipo. Por seguridad, la contraseña se proporciona bajo solicitud.</p>
+                    <a href="https://v0-zebrands-media-converter.vercel.app/" target="_blank" rel="noopener noreferrer" class="mt-4 inline-block bg-sky-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-sky-500 transition-colors">Acceder a la Plataforma</a>
+                </div>
+            </section>
+
+            <!-- === NEW SECTION: THE VALUE OF DESIGN === -->
+            <section class="story-section text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-white">Más Allá de la Función: El Valor del Diseño 🎨</h2>
+                <p class="mt-4 text-slate-300 max-w-3xl mx-auto">
+                    Una herramienta no solo debe ser funcional, debe ser un placer usarla. La misma obsesión por una experiencia de usuario de alta calidad que aplicamos a nuestros productos, se aplicó aquí.
+                </p>
+                <div class="mt-8 card p-6 rounded-xl text-left max-w-2xl mx-auto">
+                     <p class="text-slate-400 text-sm">Desde la elección de la paleta de colores y la tipografía, hasta las animaciones sutiles y el feedback claro, cada detalle fue pensado. El objetivo era crear una solución que no solo resolviera un problema, sino que también reflejara el estándar de calidad de Zebrands. Esta misma filosofía se aplicó para crear esta presentación interactiva.</p>
+                </div>
+            </section>
+
+            <!-- === SECTION: CONCLUSION === -->
+            <section class="text-center story-section">
+                <h2 class="text-3xl md:text-4xl font-bold text-white">Un Nuevo Superpoder para Todos 🦸</h2>
+                <p class="mt-4 text-slate-300 max-w-3xl mx-auto">
+                    Este proyecto demuestra que no necesitas ser programador para construir soluciones de alto valor. Al combinar el conocimiento del negocio con las herramientas de IA, podemos resolver nuestros propios problemas de forma autónoma y ultra-rápida.
+                </p>
+            </section>
+        </main>
+
+        <!-- === FOOTER === -->
+        <footer class="text-center py-16 mt-16">
+            <a href="#top" class="back-to-top inline-block mb-8 text-slate-500 hover:text-sky-400">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto w-8 h-8"><path d="M12 19V5"></path><path d="m5 12 7-7 7 7"></path></svg>
+                <span class="text-xs">Volver Arriba</span>
+            </a>
+            <p id="footer-text" class="text-sm text-slate-500">
+                Este caso de estudio fue generado por una IA,
+                <br>
+                dirigido por la visión de un <span class="highlight-text font-semibold">Product Manager (Pablo Arroyo)</span>.
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        gsap.registerPlugin(ScrollTrigger, TextPlugin);
+
+        // --- Initial Gimmick Animation ---
+        const gimmickBtn = document.getElementById('gimmick-btn');
+        const gifContainer = document.getElementById('gif-container');
+        const gimmickContainer = document.getElementById('gimmick-text-container');
+        const gimmickText = document.getElementById('gimmick-text');
+        
+        const gimmickContent = "SYSTEM BOOT... INITIALIZING CASE STUDY... GENERATING NARRATIVE... ROL: PRODUCT MANAGER. EJECUTOR: IA. OBJETIVO: DEMOSTRAR EL PODER DE LA COLABORACIÓN. SIMULACIÓN INICIADA.";
+
+        gimmickBtn.addEventListener('click', () => {
+            gsap.to(gimmickBtn, { opacity: 0, y: -20, duration: 0.5, onComplete: () => gimmickBtn.style.display = 'none' });
+            
+            // Show the GIF container and then the text
+            gifContainer.style.display = 'block';
+            gsap.from(gifContainer, { opacity: 0, scale: 0.9, duration: 0.5, delay: 0.2 });
+            
+            gimmickContainer.style.display = 'block';
+            gsap.from(gimmickContainer, { opacity: 0, scale: 0.9, duration: 0.5, delay: 0.4 });
+            gsap.to(gimmickText, {
+                duration: 4,
+                text: gimmickContent,
+                ease: "none",
+                delay: 0.6
+            });
+        });
+
+        // --- Fade-in animations for sections ---
+        gsap.from("#hero-box", { opacity: 0, y: 50, duration: 1, ease: 'power3.out' });
+        
+        document.querySelectorAll('.story-section').forEach(section => {
+            gsap.from(section, {
+                scrollTrigger: {
+                    trigger: section,
+                    start: 'top 80%',
+                    toggleActions: 'play none none none',
+                },
+                opacity: 0,
+                y: 50,
+                duration: 1,
+                ease: 'power3.out',
+            });
+        });
+
+        // --- Interactive conversation logic ---
+        const promptButtons = document.querySelectorAll('.prompt-btn');
+        promptButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const targetId = button.dataset.target;
+                const responseEl = document.getElementById(targetId);
+                
+                document.querySelectorAll('.ai-response.show').forEach(openResponse => {
+                    if (openResponse.id !== targetId) {
+                        openResponse.classList.remove('show');
+                        openResponse.previousElementSibling.classList.remove('active');
+                    }
+                });
+
+                responseEl.classList.toggle('show');
+                button.classList.toggle('active');
+            });
+        });
+
+        // --- Stats counters animation ---
+        const stats = { savings: 0, speed: 0, cost: 0 };
+        gsap.to(stats, {
+            scrollTrigger: {
+                trigger: '#stat-savings',
+                start: 'top 85%',
+                toggleActions: 'play none none none',
+            },
+            duration: 2,
+            savings: 900,
+            speed: 8,
+            cost: 0,
+            ease: 'power2.out',
+            onUpdate: () => {
+                document.getElementById('stat-savings').textContent = Math.ceil(stats.savings);
+                document.getElementById('stat-speed').textContent = Math.ceil(stats.speed);
+                document.getElementById('stat-cost').textContent = '$' + Math.ceil(stats.cost);
+            }
+        });
+        
+        // --- Footer animation ---
+        gsap.from("#footer-text", {
+             scrollTrigger: {
+                trigger: "#footer-text",
+                start: 'top 95%',
+            },
+            opacity: 0,
+            duration: 1.5
+        });
+
+    });
+    </script>
+
+</body>
+</html>
