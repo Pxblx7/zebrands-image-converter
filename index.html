@@ -47,6 +47,10 @@
             background-color: #1e293b; /* bg-slate-800 */
             border: 1px solid #334155; /* border-slate-700 */
             transition: all 0.3s ease;
+            /* MODIFICATION: Added flex properties to align icon */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         .prompt-btn:hover {
             background-color: #0ea5e9; /* Highlight color on hover */
@@ -58,6 +62,10 @@
             background-color: #16a34a;
             border-color: #16a34a;
             color: white;
+        }
+        /* MODIFICATION: Hide indicator when active */
+        .prompt-btn.active .click-indicator {
+            display: none;
         }
         .ai-response {
             max-height: 0;
@@ -110,6 +118,48 @@
         }
         .back-to-top {
             transition: opacity 0.3s, transform 0.3s;
+        }
+        
+        /* MODIFICATION: Styles for the new click indicator */
+        .click-indicator {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            flex-shrink: 0; /* Prevents the icon from shrinking */
+        }
+        .click-indicator::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: #0ea5e9;
+            border-radius: 50%;
+            animation: heartbeat 1.5s infinite ease-out;
+            z-index: 0;
+        }
+        .click-indicator svg {
+            position: relative;
+            z-index: 1;
+            width: 20px;
+            height: 20px;
+            color: white;
+        }
+        @keyframes heartbeat {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.7;
+            }
+            50% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0.8);
+                opacity: 0.7;
+            }
         }
     </style>
 </head>
@@ -201,10 +251,13 @@
                         <p class="text-slate-400 mt-1">Estos son ejemplos muy simplificados de las iteraciones. El proceso real fue mucho más detallado. Haz clic para ver cómo la IA respondía.</p>
                         
                         <div class="mt-6 space-y-4">
-                             <!-- More Prompts -->
+                            <!-- MODIFICATION: Replaced icon with a plus sign -->
                             <div>
                                 <button class="prompt-btn w-full text-left p-4 rounded-lg" data-target="response-1">
-                                    <span class="font-bold">👤 Prompt #1 (Base):</span> "Toma este prototipo HTML y conviértelo en una app moderna y robusta con React y TypeScript."
+                                    <span class="pr-4"><span class="font-bold">👤 Prompt #1 (Base):</span> "Toma este prototipo HTML y conviértelo en una app moderna y robusta con React y TypeScript."</span>
+                                    <span class="click-indicator">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z" clip-rule="evenodd" /></svg>
+                                    </span>
                                 </button>
                                 <div id="response-1" class="ai-response card p-4 rounded-lg border-l-4 border-green-500">
                                     <p class="font-bold text-green-400">🤖 AI Response:</p>
@@ -213,7 +266,10 @@
                             </div>
                             <div>
                                 <button class="prompt-btn w-full text-left p-4 rounded-lg" data-target="response-2">
-                                    <span class="font-bold">👤 Prompt #2 (Security):</span> "Necesitamos que sea segura. Acceso solo con contraseña y que la sesión expire tras 30 mins de inactividad."
+                                    <span class="pr-4"><span class="font-bold">👤 Prompt #2 (Security):</span> "Necesitamos que sea segura. Acceso solo con contraseña y que la sesión expire tras 30 mins de inactividad."</span>
+                                    <span class="click-indicator">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z" clip-rule="evenodd" /></svg>
+                                    </span>
                                 </button>
                                 <div id="response-2" class="ai-response card p-4 rounded-lg border-l-4 border-green-500">
                                     <p class="font-bold text-green-400">🤖 AI Response:</p>
@@ -222,7 +278,10 @@
                             </div>
                             <div>
                                 <button class="prompt-btn w-full text-left p-4 rounded-lg" data-target="response-5">
-                                    <span class="font-bold">👤 Prompt #3 (Core Functionality):</span> "La carga de archivos <code>.zip</code> debe ser instantánea y soportar hasta 100MB por conversión."
+                                    <span class="pr-4"><span class="font-bold">👤 Prompt #3 (Core Functionality):</span> "La carga de archivos <code>.zip</code> debe ser instantánea y soportar hasta 100MB por conversión."</span>
+                                    <span class="click-indicator">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z" clip-rule="evenodd" /></svg>
+                                    </span>
                                 </button>
                                 <div id="response-5" class="ai-response card p-4 rounded-lg border-l-4 border-green-500">
                                     <p class="font-bold text-green-400">🤖 AI Response:</p>
@@ -231,7 +290,10 @@
                             </div>
                             <div>
                                 <button class="prompt-btn w-full text-left p-4 rounded-lg" data-target="response-3">
-                                    <span class="font-bold">👤 Prompt #4 (UX/UI):</span> "Mejora la accesibilidad de los colores. El botón de 'Convertir' se rompe visualmente al procesar."
+                                    <span class="pr-4"><span class="font-bold">👤 Prompt #4 (UX/UI):</span> "Mejora la accesibilidad de los colores. El botón de 'Convertir' se rompe visualmente al procesar."</span>
+                                    <span class="click-indicator">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z" clip-rule="evenodd" /></svg>
+                                    </span>
                                 </button>
                                 <div id="response-3" class="ai-response card p-4 rounded-lg border-l-4 border-green-500">
                                     <p class="font-bold text-green-400">🤖 AI Response:</p>
@@ -240,7 +302,10 @@
                             </div>
                             <div>
                                 <button class="prompt-btn w-full text-left p-4 rounded-lg" data-target="response-4">
-                                    <span class="font-bold">👤 Prompt #5 (Bug Fix):</span> "Hay un bug. Después de convertir un ZIP, no puedo volver a subirlo. Parece un problema de estado."
+                                    <span class="pr-4"><span class="font-bold">👤 Prompt #5 (Bug Fix):</span> "Hay un bug. Después de convertir un ZIP, no puedo volver a subirlo. Parece un problema de estado."</span>
+                                    <span class="click-indicator">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z" clip-rule="evenodd" /></svg>
+                                    </span>
                                 </button>
                                 <div id="response-4" class="ai-response card p-4 rounded-lg border-l-4 border-green-500">
                                     <p class="font-bold text-green-400">🤖 AI Response:</p>
@@ -388,9 +453,11 @@
                 const targetId = button.dataset.target;
                 const responseEl = document.getElementById(targetId);
                 
+                // This logic handles closing other prompts when a new one is opened
                 document.querySelectorAll('.ai-response.show').forEach(openResponse => {
                     if (openResponse.id !== targetId) {
                         openResponse.classList.remove('show');
+                        // Also remove the 'active' class from the corresponding button
                         openResponse.previousElementSibling.classList.remove('active');
                     }
                 });
