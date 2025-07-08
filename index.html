@@ -341,7 +341,7 @@
                                 <div>
                                     <p class="text-slate-400 text-sm">Ahorro Mensual</p>
                                     <p class="stat-number" id="stat-savings">0</p>
-                                    <p class="text-slate-400 -mt-2">MB+</p>
+                                    <p class="text-slate-400 -mt-2">MB</p>
                                 </div>
                                 <div>
                                     <p class="text-slate-400 text-sm">Ahorro de Tiempo</p>
@@ -476,11 +476,13 @@
                 toggleActions: 'play none none none',
             },
             duration: 2,
-            savings: 900,
-            speed: 8,
+            // MODIFICATION: Updated savings and speed values
+            savings: 1140,
+            speed: 30,
             cost: 0,
             ease: 'power2.out',
             onUpdate: () => {
+                // MODIFICATION: Removed tilde (~) symbol
                 document.getElementById('stat-savings').textContent = Math.ceil(stats.savings);
                 document.getElementById('stat-speed').textContent = Math.ceil(stats.speed);
                 document.getElementById('stat-cost').textContent = '$' + Math.ceil(stats.cost);
